@@ -40,7 +40,6 @@ def speechToText(AUDIO_FILE):
         #                     "confidence": 0.9843024,
         #                     "transcript": "and I am making a second audio recording because this software should be able to do multiple recordings",
         #                     "words": [
-                            
         #                     ]
         #                 }
         #             ]
@@ -48,7 +47,7 @@ def speechToText(AUDIO_FILE):
         #     ]
         # }
         transcription = r.recognize_google_cloud(audio, credentials_json=GOOGLE_CLOUD_SPEECH_CREDENTIALS, language = targetLanguage)
-        print ",".join([filename, transcription])
+        print transcription
     except sr.UnknownValueError:
         print ",".join([filename, "Google Cloud Speech could not understand audio"])
     except sr.RequestError as e:

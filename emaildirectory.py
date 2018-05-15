@@ -64,7 +64,7 @@ must be running an SMTP server.
     print 'Sending {0}'.format(directory)
     # Create the enclosing (outer) message
     outer = MIMEMultipart()
-    outer['Subject'] = 'Contents of directory %s' % os.path.abspath(directory)
+    outer['Subject'] = 'transcription of %s' % os.path.join(*(directory.split(os.path.sep)[2:]))
     outer['To'] = COMMASPACE.join(opts.recipients)
     outer['From'] = username
     outer.preamble = 'You will not see this in a MIME-aware mail reader.\n'

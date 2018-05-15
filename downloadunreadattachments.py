@@ -30,6 +30,16 @@ class FetchEmail():
         """
         self.connection.close()
 
+    # Get the name of the emailer and their address
+    def parse_email_address(self, email_address):
+        """
+        Helper function to parse out the email address from the message
+
+        return: tuple (name, address). Eg. ('John Doe', 'jdoe@example.com')
+        """
+        return email.utils.parseaddr(email_address)
+
+
     # returns -1 if no attachment is found else returns attachment path after downloading
     def save_attachment(self, msg, download_folder):
         """
@@ -38,6 +48,8 @@ class FetchEmail():
 
         return: file path to attachment
         """
+        emailer = email.utils.parseaddr(msg['From'])[1]
+        print(emailer)
         att_path = "-1"
         for part in msg.walk():
             if part.get_content_maintype() == 'multipart':
@@ -47,7 +59,7 @@ class FetchEmail():
 
             filename = part.get_filename()
             timestr = time.strftime("%Y%m%d%H%M%S") # timestamp to make unique filename
-            att_path = os.path.join(download_folder, "{0}-{1}".format(timestr, filename))
+            att_path = os.path.join(download_folder, "{0}-{2}".format(emailer, timestr, filename))
 
             if not os.path.isfile(att_path):
                 fp = open(att_path, 'wb')
@@ -72,6 +84,7 @@ class FetchEmail():
                     continue 
 
                 msg = email.message_from_string(data[0][1])
+                #print(msg['From'])
                 if isinstance(msg, str) == False:
                     emails.append(msg)
                 response, data = self.connection.store(message, '+FLAGS','\\Seen')
@@ -80,14 +93,6 @@ class FetchEmail():
 
         self.error = "Failed to retreive emails."
         return emails
-
-    def parse_email_address(self, email_address):
-        """
-        Helper function to parse out the email address from the message
-
-        return: tuple (name, address). Eg. ('John Doe', 'jdoe@example.com')
-        """
-        return email.utils.parseaddr(email_address)
 
 
 def processUnreadEmails():
@@ -98,6 +103,7 @@ def processUnreadEmails():
         if client.save_attachment(msg, attachmentDir) != "-1":
             d = d + 1
         n = n + 1
+       # print client.parse_email_address(msg['From'])[1]
     print "Processed {0} unread email(s), downloaded {1} attachment(s)".format(n, d)
     client.close_connection()
 

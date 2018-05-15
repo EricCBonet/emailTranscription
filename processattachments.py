@@ -70,13 +70,13 @@ class CreateHandler(FileSystemEventHandler):
     def on_created(self, event):
         time.sleep(delayBeforeOpening)
         if not event.src_path.endswith('.zip'):
-            print '{0} is not a zip file'.format(event.src_path)
+            print('{0} is not a zip file'.format(event.src_path))
             return
         try:
             processZip(event.src_path)
         except:
             logging.exception('processZipException') # log exception
-        print '............................................'
+        print('............................................')
 
 
 if __name__ == '__main__':
@@ -90,7 +90,3 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         observer.stop()
     observer.join()
-
-
-
-
